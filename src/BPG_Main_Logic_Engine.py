@@ -48,12 +48,12 @@ class Main_Game_Engine:
 
     #? Function to define the disposition of ships
     def get__ship_near_colisions(self, direction_of_ship_placement:str,ship_size: int, players_board: list, starting_position_row: int, starting_position_col: int):
+        colisions_list: set = set(); 
         error_on_bound_message: str = "The values presented for initial position are out of bounds"
         if (starting_position_row -1 > 5 or starting_position_row -1 < 0) or (starting_position_col -1 > 5 or starting_position_col -1 < 0):
             return error_on_bound_message
         else:
             if direction_of_ship_placement.lower() == "vertical":
-                colisions_list: set = set();
                 for unit_of_len in range(ship_size): 
                     #? Check in place:
                     if players_board[(starting_position_row-1)+unit_of_len][starting_position_col-1] != "[   ]":
@@ -65,7 +65,7 @@ class Main_Game_Engine:
                     if players_board[starting_position_row + unit_of_len][starting_position_col-1] != "[   ]":
                         colisions_list.add("Colision below");
             elif direction_of_ship_placement.lower() == "horizontal":
-                colisions_list: set = set(); 
+                
                 for unit_of_len in range(ship_size):
                     #? Check in place:
                     if players_board[starting_position_row-1][(starting_position_col-1)+unit_of_len] != "[   ]":
