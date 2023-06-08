@@ -4,15 +4,12 @@
 #  @email          :  santiagofarellanoj@gmail.com
 #  @repo           :  Battleship.io
 #  @createdOn      :  07-06-23
-#  @description    :  Representation of the Iconic Battleship Game
+#  @description    :  Implementation of the Main Logic Engine class for the game Battleship.io
 #===================================================================================================
-#! Import declarations
-from random import randint
-from array import array
 
 
-#! Class definition for the game mechanics
 
+#! Class definition for the game mechanic
 class Main_Game_Engine:
     #? Initial Constructor
     def __init__(self, number_of_players: int):
@@ -76,7 +73,7 @@ class Main_Game_Engine:
                     #? Check Left:
                     if players_board[starting_position_row-1][(starting_position_col-2+unit_of_len)] != "[   ]":
                         colisions_list.add("Colision Left");
-        return colisions_list; #ingore                
+        return colisions_list;                
     def set__disposition_of_ships(self, type_of_ship: str, starting_position_row: int, starting_position_col: int, direction_of_ships_placement: str, players_board: list):
         #* Check to see which type of battleship we are working with in terms of sizing nothing will go further than 6 in either direction
         battleship_type: str = type_of_ship;
@@ -153,7 +150,8 @@ class Main_Game_Engine:
 
 
         
-        
+if __name__ == "__main__":
+    print("This is a source file dont run alone")
     
         
                 
