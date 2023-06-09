@@ -26,9 +26,17 @@ engine_test.set__disposition_of_ships("Frigate",2,2,"Horizontal",game_grid_test)
 
 result: tuple = engine_test.set__shot_on_location(game_grid_test,2,2)
 result: tuple = engine_test.set__shot_on_location(game_grid_test,4,2)
+
 for sub_list in game_grid_test:
     printable_row = "";
     for value in sub_list:
         printable_row += " ".join(value) + " ";
     print(printable_row);
+
+
+list_of_position_pairs = engine_test.set__cummulative_ship_positions(game_grid_test)
+
+for pair in list_of_position_pairs:
+    print(pair);
+
 

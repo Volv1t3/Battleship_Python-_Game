@@ -1,7 +1,6 @@
 #===================================================================================================
 #  ?                                           ABOUT
 #  @author         :  Santiago Arellano
-#  @email          :  santiagofarellanoj@gmail.com
 #  @repo           :  Battleship.io
 #  @createdOn      :  07-06-23
 #  @description    :  Implementation of the Main Logic Engine class for the game Battleship.io
@@ -134,11 +133,11 @@ class Main_Game_Engine:
                 result_for_point_alloting = True;
                 enemy_player_grid[shot_row-1][shot_col-1] = "[ \xD7 ]";
             case "[ D ]":
-                result = "Hit on a Destroyer";
+                result = "Hit on a Destroyer!";
                 result_for_point_alloting = True;
                 enemy_player_grid[shot_row-1][shot_col-1] = "[ \xD7 ]";
             case "[ S ]":
-                result = "Hit on a Submarine";
+                result = "Hit on a Submarine!";
                 result_for_point_alloting = True;
                 enemy_player_grid[shot_row-1][shot_col-1] = "[ \xD7 ]";
             case "[ C ]":
@@ -147,6 +146,23 @@ class Main_Game_Engine:
                 enemy_player_grid[shot_row-1][shot_col-1] = "[ \xD7 ]";
         results_tuple = (result, result_for_point_alloting);
         return results_tuple;
+
+    #? Function to analyze the board and save positions of each ship for the player
+    def set__cummulative_ship_positions(self, player_board: list):
+        ship_positions_pairs: list = list()
+        for row in range(0,6,1):
+            for col in range(0,6,1):
+                if player_board[row][col] != "[   ]":
+                    ship_positions_pairs.append((row,col))
+                else:
+                    continue
+        return ship_positions_pairs;
+    def get__tabletop_view(self, player_board: list):
+        for sub_list in player_board:
+            printable_row = "";
+            for value in sub_list:
+                printable_row += " ".join(value) + " ";
+            print(printable_row);
 
 
         
