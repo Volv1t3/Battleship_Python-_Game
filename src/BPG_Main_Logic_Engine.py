@@ -44,37 +44,45 @@ class Main_Game_Engine:
 
     #? Function to define the disposition of ships
     def get__ship_near_colisions(self, direction_of_ship_placement:str,ship_size: int, players_board: list, starting_position_row: int, starting_position_col: int):
-        colisions_list: set = set(); 
+        colisions_list: set(int) = set(); 
         error_on_bound_message: str = "The values presented for initial position are out of bounds"
         if (starting_position_row -1 > 5 or starting_position_row -1 < 0) or (starting_position_col -1 > 5 or starting_position_col -1 < 0):
             return error_on_bound_message
         else:
             if direction_of_ship_placement.lower() == "vertical":
-                for unit_of_len in range(ship_size): 
-                    #? Check in place:
-                    if players_board[(starting_position_row-1)+unit_of_len][starting_position_col-1] != "[   ]":
-                        colisions_list.add("Colision on Starting Place");
-                    #? Check above:
-                    if players_board[(starting_position_row-2)+unit_of_len][starting_position_col-1] != "[   ]":
-                            colisions_list.add("Colision above");
-                    #? Check Below:
-                    if players_board[starting_position_row + unit_of_len][starting_position_col-1] != "[   ]":
-                        colisions_list.add("Colision below");
+                for unit_of_len in range(0,ship_size-1,1):
+                    try:
+                        #? Check in place:
+                        if players_board[(starting_position_row-1)+unit_of_len][starting_position_col-1] != "[   ]":
+                            colisions_list.add("Colision on Starting Place");
+                        #? Check Below:
+                        if players_board[starting_position_row + unit_of_len][starting_position_col-1] != "[   ]":
+                            colisions_list.add("Colision below");
+                    except IndexError:
+                        print("Stopping the execution of the check given that the ship in question is going out of bounds. Ensure that your starting row and columns are within bounds and the ships direction will not cause the ship to go out of the board.")
+                        colisions_list.clear()
+                        colisions_list.add(404)
+                        return colisions_list
             elif direction_of_ship_placement.lower() == "horizontal":
                 
-                for unit_of_len in range(ship_size):
+                for unit_of_len in range(0,ship_size-1,1):
                     #? Check in place:
-                    if players_board[starting_position_row-1][(starting_position_col-1)+unit_of_len] != "[   ]":
-                        colisions_list.add("Colision on Starting Place");
-                    #? Check Right:
-                    if players_board[starting_position_row-1][starting_position_col + unit_of_len] != "[   ]":
-                        colisions_list.add("Colision Right");
-                    #? Check Left:
-                    if players_board[starting_position_row-1][(starting_position_col-2+unit_of_len)] != "[   ]":
-                        colisions_list.add("Colision Left");
+                    try:
+                        if players_board[starting_position_row-1][(starting_position_col-1)+unit_of_len] != "[   ]":
+                            colisions_list.add("Colision on Starting Place");
+                        #? Check Right:
+                        if players_board[starting_position_row-1][starting_position_col + unit_of_len] != "[   ]":
+                            colisions_list.add("Colision Right");
+                    except IndexError:
+                        print("Stopping the execution of the check given that the ship in question is going out of bounds. Ensure that your starting row and columns are within bounds and the ships direction will not cause the ship to go out of the board.")
+                        colisions_list.clear()
+                        colisions_list.add(404)
+                        return colisions_list
+
         return colisions_list;                
     def set__disposition_of_ships(self, type_of_ship: str, starting_position_row: int, starting_position_col: int, direction_of_ships_placement: str, players_board: list):
-        #* Check to see which type of battleship we are working with in terms of sizing nothing will go further than 6 in either direction
+        #* Check to see which type of battleship we are working with in terms of sizing nothing will go further than 6 in either direction 
+        placement_result = True;
         battleship_type: str = type_of_ship;
         battleship_length: int = 0;
         battleship_direction_based_on_ship: str = direction_of_ships_placement.lower();
@@ -90,14 +98,37 @@ class Main_Game_Engine:
         
         #* Checking to see if the starting position & orientation is valid
         colisions_check = self.get__ship_near_colisions(direction_of_ships_placement,battleship_length,players_board,starting_position_row,starting_position_col)
+        for value in colisions_check:
+            if value == 404:
+                print("Stopping the execution of ship placement given that ship is going out of bounds, consider that ships go from left to right and if not placed carefully might go out of bounds")
+                placement_result = False;
+                return placement_result;
+            else: 
+                continue;
+        
         if len(colisions_check) == 0:
+            len_control = 0;
             if battleship_direction_based_on_ship.lower() == "horizontal":
-                for unit_of_length in range(0,battleship_length,1):
-                    players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[ "+battleship_type[0:1:1] + " ]" ;
+                try:
+                    for unit_of_length in range(0,battleship_length,1):
+                        len_control += 1;
+                        players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[ "+battleship_type[0:1:1] + " ]" ;
+                except IndexError:
+                    print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
+                    for unit_of_length in range(0, len_control,1):
+                        players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[   ]" ;
+                    len_control = 0;
+                    placement_result = False;
             if direction_of_ships_placement.lower() == "vertical":
-                for unit_of_length in range(0,battleship_length,1):
-                    players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[ "+battleship_type[0:1:1] + " ]" ;
-        else:
+                try:
+                    for unit_of_length in range(0,battleship_length,1):
+                        len_control += 1;
+                        players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[ "+battleship_type[0:1:1] + " ]" ;
+                except IndexError:
+                    print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
+                    players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[   ]";
+                    placement_result = False;
+        else:   
             print(f'The |{type_of_ship}| you are trying to place on |{starting_position_row}| |{starting_position_col}| presents the following colisions with the ships')
             for value in enumerate(colisions_check, start=1):
                 print(value)
@@ -110,13 +141,31 @@ class Main_Game_Engine:
                     continue
             if user_decision.upper() == "N":
                 print("Acknowledge passing up this placement request Captain!")
+                placement_result = False;
+                return placement_result;
             elif user_decision.upper() == "Y":
+                len_control = 0;
                 if battleship_direction_based_on_ship.lower() == "horizontal":
-                    for unit_of_length in range(0,battleship_length,1):
-                        players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[ "+battleship_type[0:1:1] + " ]" ;
+                    try:
+                        for unit_of_length in range(0,battleship_length,1):
+                            len_control += 1;
+                            players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[ "+battleship_type[0:1:1] + " ]" ;
+                    except IndexError:
+                        print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
+                        for unit_of_length in range(0, len_control,1):
+                            players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[   ]" ;
+                        len_control = 0;
+                        placement_result = False;
                 if direction_of_ships_placement.lower() == "vertical":
-                    for unit_of_length in range(0,battleship_length,1):
-                        players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[ "+battleship_type[0:1:1] + " ]" ;
+                    try:
+                        for unit_of_length in range(0,battleship_length,1):
+                            len_control += 1;
+                            players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[ "+battleship_type[0:1:1] + " ]" ;
+                    except IndexError:
+                        print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
+                        players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[   ]";
+                        placement_result = False;
+        return placement_result;
     
     def set__shot_on_location(self, enemy_player_grid: list, shot_row: int, shot_col: int):
         #* Comparing the value on the shot direction with the current value to see if its the initial of a ship
@@ -148,7 +197,7 @@ class Main_Game_Engine:
         return results_tuple;
 
     #? Function to analyze the board and save positions of each ship for the player
-    def set__cummulative_ship_positions(self, player_board: list):
+    def get__cummulative_ship_positions__(self, player_board: list):
         ship_positions_pairs: list = list()
         for row in range(0,6,1):
             for col in range(0,6,1):
