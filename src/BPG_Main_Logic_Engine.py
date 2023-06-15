@@ -6,7 +6,10 @@
 #  @description    :  Implementation of the Main Logic Engine class for the game Battleship.io
 #===================================================================================================
 
-
+#! Preprocessing directives
+from os import environ, getenv
+from dotenv import load_dotenv
+load_dotenv()
 
 #! Class definition for the game mechanic
 class Main_Game_Engine:
@@ -59,7 +62,6 @@ class Main_Game_Engine:
                         if players_board[starting_position_row + unit_of_len][starting_position_col-1] != "[   ]":
                             colisions_list.add("Colision below");
                     except IndexError:
-                        print("Stopping the execution of the check given that the ship in question is going out of bounds. Ensure that your starting row and columns are within bounds and the ships direction will not cause the ship to go out of the board.")
                         colisions_list.clear()
                         colisions_list.add(404)
                         return colisions_list
@@ -74,7 +76,6 @@ class Main_Game_Engine:
                         if players_board[starting_position_row-1][starting_position_col + unit_of_len] != "[   ]":
                             colisions_list.add("Colision Right");
                     except IndexError:
-                        print("Stopping the execution of the check given that the ship in question is going out of bounds. Ensure that your starting row and columns are within bounds and the ships direction will not cause the ship to go out of the board.")
                         colisions_list.clear()
                         colisions_list.add(404)
                         return colisions_list
@@ -100,7 +101,6 @@ class Main_Game_Engine:
         colisions_check = self.get__ship_near_colisions(direction_of_ships_placement,battleship_length,players_board,starting_position_row,starting_position_col)
         for value in colisions_check:
             if value == 404:
-                print("Stopping the execution of ship placement given that ship is going out of bounds, consider that ships go from left to right and if not placed carefully might go out of bounds")
                 placement_result = False;
                 return placement_result;
             else: 
@@ -114,7 +114,6 @@ class Main_Game_Engine:
                         len_control += 1;
                         players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[ "+battleship_type[0:1:1] + " ]" ;
                 except IndexError:
-                    print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
                     for unit_of_length in range(0, len_control,1):
                         players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[   ]" ;
                     len_control = 0;
@@ -125,7 +124,6 @@ class Main_Game_Engine:
                         len_control += 1;
                         players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[ "+battleship_type[0:1:1] + " ]" ;
                 except IndexError:
-                    print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
                     players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[   ]";
                     placement_result = False;
         else:   
@@ -151,7 +149,6 @@ class Main_Game_Engine:
                             len_control += 1;
                             players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[ "+battleship_type[0:1:1] + " ]" ;
                     except IndexError:
-                        print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
                         for unit_of_length in range(0, len_control,1):
                             players_board[starting_position_row-1][(starting_position_col-1) + unit_of_length] = "[   ]" ;
                         len_control = 0;
@@ -162,7 +159,6 @@ class Main_Game_Engine:
                             len_control += 1;
                             players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[ "+battleship_type[0:1:1] + " ]" ;
                     except IndexError:
-                        print("Ships placement has failed due to it being placed outside of the bounds of the board.\n Incident information:\n1. Row: " + str(starting_position_row) + "\n2. Column: " + str(starting_position_col))
                         players_board[(starting_position_row -1)+ unit_of_length][starting_position_col-1] = "[   ]";
                         placement_result = False;
         return placement_result;
@@ -211,7 +207,7 @@ class Main_Game_Engine:
             printable_row = "";
             for value in sub_list:
                 printable_row += " ".join(value) + " ";
-            print(printable_row);
+            print(printable_row.center(int(environ.get('MAX_SCREEN_WIDTH'))));
 
 
         

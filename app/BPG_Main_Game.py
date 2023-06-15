@@ -8,11 +8,15 @@
 
 #! Preproccesing Directives
 from BPG_Main_Menu_Functions import Main_Menu_Option_1
+from os import environ, getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 #? Main Greeting Interface and Game Start
 
-welcome_screen_width = 60;
+welcome_screen_width: int =  int(environ.get('MAX_SCREEN_WIDTH'));
 print("|Welcome to Battleship.io!|".center(welcome_screen_width,'='))
-print("Choose one of the following Menu Options.\n1. Play a Game for Two.\n2. Quit the Game.\n")
+print("Choose one of the following Menu Options.\n1. Play a Game for Two.\n2. Quit the Game.")
 user_choice: int = 0;
 while (user_choice != 2):
     try:
